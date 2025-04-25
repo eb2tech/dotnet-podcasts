@@ -80,47 +80,14 @@ var enableMonitor = !string.IsNullOrWhiteSpace(azureMonitorConnectionString);
 if (enableMonitor)
 {
 
-    builder.Services.AddOpenTelemetryTracing(tracing =>
-        tracing.SetResourceBuilder(serviceResource)
-        .AddAzureMonitorTraceExporter(o =>
-        {
-            o.ConnectionString = azureMonitorConnectionString;
-        })
-        .AddJaegerExporter()
-        .AddHttpClientInstrumentation()
-        .AddAspNetCoreInstrumentation()
-        .AddEntityFrameworkCoreInstrumentation()
-    );
-
-    builder.Services.AddOpenTelemetryMetrics(metrics =>
-    {
-        metrics
-        .SetResourceBuilder(serviceResource)
-        .AddPrometheusExporter()
-        .AddAzureMonitorMetricExporter(o =>
-        {
-            o.ConnectionString = azureMonitorConnectionString;
-        })
-        .AddAspNetCoreInstrumentation()
-        .AddHttpClientInstrumentation()
-        .AddRuntimeInstrumentation()
-        .AddProcessInstrumentation()
-        .AddHttpClientInstrumentation()
-        .AddEventCountersInstrumentation(ec =>
-        {
-            ec.AddEventSources("Microsoft.AspNetCore.Hosting");
-        });
-    });
-
     builder.Logging.AddOpenTelemetry(logging =>
     {
         logging
-        .SetResourceBuilder(serviceResource)
-        .AddAzureMonitorLogExporter(o =>
-        {
-            o.ConnectionString = azureMonitorConnectionString;
-        })
-        .AttachLogsToActivityEvent();
+            .SetResourceBuilder(serviceResource)
+            .AddAzureMonitorLogExporter(o =>
+            {
+                o.ConnectionString = azureMonitorConnectionString;
+            });
     });
 }
 
